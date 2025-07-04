@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockHaven Favicon Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-preview {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .steps {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 10px 0;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .download-link {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .download-link:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 LockHaven Favicon</h1>
+        
+        <div class="icon-preview">
+            <h3>Icon Preview (32x32)</h3>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Lock body -->
+                <rect x="8" y="16" width="16" height="12" rx="2" fill="#3B82F6" stroke="#1E40AF" stroke-width="1"/>
+                <!-- Lock shackle -->
+                <path d="M12 16V12C12 9.79086 13.7909 8 16 8C18.2091 8 20 9.79086 20 12V16" stroke="#1E40AF" stroke-width="2" stroke-linecap="round"/>
+                <!-- Keyhole -->
+                <circle cx="16" cy="20" r="1.5" fill="#1E40AF"/>
+                <rect x="15.5" y="20" width="1" height="3" fill="#1E40AF"/>
+            </svg>
+            
+            <h3>Icon Preview (16x16)</h3>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Lock body -->
+                <rect x="8" y="16" width="16" height="12" rx="2" fill="#3B82F6" stroke="#1E40AF" stroke-width="1"/>
+                <!-- Lock shackle -->
+                <path d="M12 16V12C12 9.79086 13.7909 8 16 8C18.2091 8 20 9.79086 20 12V16" stroke="#1E40AF" stroke-width="2" stroke-linecap="round"/>
+                <!-- Keyhole -->
+                <circle cx="16" cy="20" r="1.5" fill="#1E40AF"/>
+                <rect x="15.5" y="20" width="1" height="3" fill="#1E40AF"/>
+            </svg>
+        </div>
+
+        <div class="steps">
+            <h3>How to Convert to Favicon</h3>
+            <ol>
+                <li><strong>Download the SVG:</strong> Right-click on the icon above and "Save image as..." or use the SVG file at <code>public/lock-icon.svg</code></li>
+                <li><strong>Convert to ICO:</strong> Use an online converter like:
+                    <ul>
+                        <li><a href="https://convertio.co/svg-ico/" target="_blank">Convertio</a></li>
+                        <li><a href="https://favicon.io/favicon-converter/" target="_blank">Favicon.io</a></li>
+                        <li><a href="https://www.favicon-generator.org/" target="_blank">Favicon Generator</a></li>
+                    </ul>
+                </li>
+                <li><strong>Save as favicon.ico</strong> in your <code>public/</code> folder</li>
+                <li><strong>Update your layout.tsx</strong> to reference the favicon</li>
+            </ol>
+        </div>
+
+        <h3>Alternative: Use SVG as Favicon</h3>
+        <p>Modern browsers support SVG favicons! You can simply add this to your <code>src/app/layout.tsx</code>:</p>
+        <pre><code>&lt;link rel="icon" type="image/svg+xml" href="/lock-icon.svg" /&gt;</code></pre>
+
+        <h3>Update Your Layout</h3>
+        <p>Replace the existing favicon reference in your layout.tsx with:</p>
+        <pre><code>import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'LockHaven - Secure File Storage',
+  description: 'Upload, encrypt, and store your files with military-grade security.',
+  icons: {
+    icon: '/lock-icon.svg',
+    shortcut: '/lock-icon.svg',
+    apple: '/lock-icon.svg',
+  },
+}</code></pre>
+    </div>
+</body>
+</html> 
