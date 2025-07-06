@@ -3,6 +3,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
+import { validateEmail, validatePassword, validateRequired } from '@/lib/validation'
+import FormInput from '@/components/ui/FormInput'
 
 export default function LoginPage() {
     const router = useRouter()
@@ -12,28 +15,22 @@ export default function LoginPage() {
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    const [success, setSuccess] = useState('')
+    const [passwordHelperText, setPasswordHelperText] = useState('')
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
                 
-        // Clear any previous errors
-        setError('')
+        // Use shared validation functions
+        const emailValidation = validateEmail(email)
+        if (!emailValidation.isValid) {
+            setError(emailValidation.error!)
+            return
+        }
         
-        // Basic validation
-        if (!email || !password) {
-            setError('Please fill in all fields')
-            return
-        }
-
-        if (!email.includes('@') || !email.includes('.')) {
-            setError('Please enter a valid email address')
-            return
-        }
-
-        if (!passwordRegex.test(password)) {
-            setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+        const passwordValidation = validatePassword(password)
+        if (!passwordValidation.isValid) {
+            setError(passwordValidation.error!)
             return
         }
 
@@ -47,10 +44,11 @@ export default function LoginPage() {
             await new Promise(resolve => setTimeout(resolve, 1000))
             
             // Navigate to dashboard after successful login
-            router.push('/dashboard')
+            setSuccess(SUCCESS_MESSAGES.LOGIN_SUCCESS)
+            setTimeout(() => router.push('/dashboard'), 1500)
             
         } catch (err) {
-            setError('Login failed. Please try again.')
+            setError(ERROR_MESSAGES.LOGIN_FAILED)
         } finally {
             setIsLoading(false)
         }
@@ -85,44 +83,55 @@ export default function LoginPage() {
                         {error}
                     </div>
                 )}
+
+                {/* Success Message */}
+                {success && (
+                    <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">
+                        {success}
+                    </div>
+                )}
                 
                 {/* Form Container */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Email Input */}
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your email"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="email"
+                        name="email"
+                        type="email"
+                        label="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        disabled={isLoading}
+                    />
 
                     {/* Password Input */}
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Password
-                        </label>
-                        <input 
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your password"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="password"
+                        name="password"
+                        type="password"
+                        label="Password"
+                        value={password}
+                        onChange={(e) => {
+                            const newPassword = e.target.value
+                            setPassword(newPassword)
+                            
+                            // Real-time password validation
+                            if (newPassword && !PASSWORD_REGEX.test(newPassword)) {
+                                setPasswordHelperText('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+                            } else if (newPassword) {
+                                setPasswordHelperText('Password meets requirements ✓')
+                            } else {
+                                setPasswordHelperText('')
+                            }
+                        }}
+                        placeholder="Enter your password"
+                        required
+                        disabled={isLoading}
+                        helperText={passwordHelperText}
+                        showHelperText={!!passwordHelperText}
+                    />
 
                     {/* Submit Button */}
                     <button 
