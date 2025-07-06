@@ -3,6 +3,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
+import { validateEmail, validatePassword, validatePasswordConfirmation, validateRequired } from '@/lib/validation'
+import FormInput from '@/components/ui/FormInput'
 
 export default function RegisterPage() {
     const router = useRouter()
@@ -12,12 +15,11 @@ export default function RegisterPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [passwordError, setPasswordError] = useState('')
     const [error, setError] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
     const [success, setSuccess] = useState('')
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    const [isLoading, setIsLoading] = useState(false)
+    const [passwordHelperText, setPasswordHelperText] = useState('')
+    const [confirmPasswordHelperText, setConfirmPasswordHelperText] = useState('')
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -25,24 +27,34 @@ export default function RegisterPage() {
         // Clear any previous errors
         setError('')
         
-        // Basic validation
-        if (!firstName || !lastName || !email || !password || !confirmPassword) {
-            setError('Please fill in all fields')
+        // Use shared validation functions
+        const firstNameValidation = validateRequired(firstName, 'first name')
+        if (!firstNameValidation.isValid) {
+            setError(firstNameValidation.error!)
             return
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
-            setError('Please enter a valid email address')
+        const lastNameValidation = validateRequired(lastName, 'last name')
+        if (!lastNameValidation.isValid) {
+            setError(lastNameValidation.error!)
             return
         }
 
-        if (!passwordRegex.test(password)) {
-            setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+        const emailValidation = validateEmail(email)
+        if (!emailValidation.isValid) {
+            setError(emailValidation.error!)
             return
         }
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match')
+        const passwordValidation = validatePassword(password)
+        if (!passwordValidation.isValid) {
+            setError(passwordValidation.error!)
+            return
+        }
+
+        const confirmPasswordValidation = validatePasswordConfirmation(password, confirmPassword)
+        if (!confirmPasswordValidation.isValid) {
+            setError(confirmPasswordValidation.error!)
             return
         }
 
@@ -55,11 +67,11 @@ export default function RegisterPage() {
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000))
 
-            setSuccess('Account created successfully!')
+            // Navigate to dashboard after successful registration
+            setSuccess(SUCCESS_MESSAGES.REGISTRATION_SUCCESS)
             setTimeout(() => router.push('/dashboard'), 1500)
-
         } catch (err) {
-            setError('Registration failed. Please try again.')
+            setError(ERROR_MESSAGES.REGISTRATION_FAILED)
         } finally {
             setIsLoading(false)
         }
@@ -105,105 +117,97 @@ export default function RegisterPage() {
                 {/* Form Container */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* First Name Input */}
-                    <div>
-                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            First Name
-                        </label>
-                        <input
-                            type="text"
-                            id="firstName"
-                            name="firstName"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your first name"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        label="First Name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Enter your first name"
+                        required
+                        disabled={isLoading}
+                    />
 
                     {/* Last Name Input */}
-                    <div>
-                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Last Name
-                        </label>
-                        <input
-                            type="text"
-                            id="lastName"
-                            name="lastName"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your last name"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        label="Last Name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Enter your last name"
+                        required
+                        disabled={isLoading}
+                    />
 
                     {/* Email Input */}
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your email"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="email"
+                        name="email"
+                        type="email"
+                        label="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        disabled={isLoading}
+                    />
 
                     {/* Password Input */}
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value)
-                                console.log(e.target.value)
-                                if (e.target.value && !passwordRegex.test(e.target.value)) {
-                                    setPasswordError('Password must meet requirements')
-                                } else {
-                                    setPasswordError('')
-                                }
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Enter your password"
-                            required
-                            disabled={isLoading}
-                        />
-                        {passwordError && (
-                            <div className="text-xs text-red-500 mt-1">{passwordError}</div>
-                        )}
-                    </div>
+                    <FormInput
+                        id="password"
+                        name="password"
+                        type="password"
+                        label="Password"
+                        value={password}
+                        onChange={(e) => {
+                            const newPassword = e.target.value
+                            setPassword(newPassword)
+                            
+                            // Real-time password validation
+                            if (newPassword && !PASSWORD_REGEX.test(newPassword)) {
+                                setPasswordHelperText('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+                            } else if (newPassword) {
+                                setPasswordHelperText('Password meets requirements ✓')
+                            } else {
+                                setPasswordHelperText('')
+                            }
+                        }}
+                        placeholder="Enter your password"
+                        required
+                        disabled={isLoading}
+                        helperText={passwordHelperText}
+                        showHelperText={!!passwordHelperText}
+                    />
 
                     {/* Confirm Password Input */}
-                    <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Confirm Password
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                            placeholder="Confirm your password"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                    <FormInput
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        label="Confirm Password"
+                        value={confirmPassword}
+                        onChange={(e) => {
+                            const newConfirmPassword = e.target.value
+                            setConfirmPassword(newConfirmPassword)
+                            
+                            // Real-time password confirmation validation
+                            if (newConfirmPassword && password && newConfirmPassword !== password) {
+                                setConfirmPasswordHelperText('Passwords do not match')
+                            } else if (newConfirmPassword && password && newConfirmPassword === password) {
+                                setConfirmPasswordHelperText('Passwords match ✓')
+                            } else {
+                                setConfirmPasswordHelperText('')
+                            }
+                        }}
+                        placeholder="Confirm your password"
+                        required
+                        disabled={isLoading}
+                        helperText={confirmPasswordHelperText}
+                        showHelperText={!!confirmPasswordHelperText}
+                    />
 
                     {/* Submit Button */}
                     <button

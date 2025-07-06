@@ -16,8 +16,8 @@ export default function LoginPage() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault() // Prevent default form submission
-        
+        e.preventDefault()
+                
         // Clear any previous errors
         setError('')
         
