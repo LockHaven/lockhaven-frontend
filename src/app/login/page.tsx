@@ -1,8 +1,13 @@
 'use client'
 
-import { useState } from "react"
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
+    const router = useRouter()
+    
+    // State for form inputs
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -11,9 +16,12 @@ export default function LoginPage() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault() // Prevent default form submission
+        
+        // Clear any previous errors
         setError('')
-
+        
+        // Basic validation
         if (!email || !password) {
             setError('Please fill in all fields')
             return
@@ -32,35 +40,54 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
+            // TODO: Add actual login logic here
             console.log('Login attempt:', { email, password })
-
+            
+            // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000))
             
-            alert('Login successful! (This is a placeholder)')
+            // Navigate to dashboard after successful login
+            router.push('/dashboard')
+            
         } catch (err) {
             setError('Login failed. Please try again.')
         } finally {
             setIsLoading(false)
         }
     }
-    
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg max-w-md w-full">
+                {/* Back to Home Link */}
+                <div className="mb-6">
+                    <Link 
+                        href="/" 
+                        className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Home
+                    </Link>
+                </div>
+
                 <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
-                    Sign Into LockHaven
+                    Sign In to LockHaven
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 text-center mb-8">
                     Access your secure files
                 </p>
                 
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
+                        {error}
+                    </div>
+                )}
+                
                 {/* Form Container */}
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {error && (
-                        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
-                            {error}
-                        </div>
-                    )}                    
                     {/* Email Input */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -106,6 +133,19 @@ export default function LoginPage() {
                         {isLoading ? 'Signing In...' : 'Sign In'}
                     </button>
                 </form>
+
+                {/* Sign Up Link */}
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Don't have an account?{' '}
+                        <Link 
+                            href="/register" 
+                            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                        >
+                            Sign up
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     )
