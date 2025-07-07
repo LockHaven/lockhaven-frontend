@@ -57,4 +57,25 @@ export function validateFormData(data: Record<string, string>): ValidationResult
     }
     
     return { isValid: true }
+}
+
+export function validateFormDataWithRules(
+    data: Record<string, string>, 
+    rules: Record<string, (value: string) => ValidationResult>
+): ValidationResult {
+    // Check required fields first
+    const requiredValidation = validateFormData(data)
+    if (!requiredValidation.isValid) {
+        return requiredValidation
+    }
+    
+    // Apply specific validation rules
+    for (const [field, validator] of Object.entries(rules)) {
+        const validation = validator(data[field])
+        if (!validation.isValid) {
+            return validation
+        }
+    }
+    
+    return { isValid: true }
 } 

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
-import { validateEmail, validatePassword, validateRequired } from '@/lib/validation'
+import { validateFormDataWithRules, validateEmail, validatePassword } from '@/lib/validation'
 import FormInput from '@/components/ui/FormInput'
 
 export default function LoginPage() {
@@ -20,17 +20,21 @@ export default function LoginPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-                
-        // Use shared validation functions
-        const emailValidation = validateEmail(email)
-        if (!emailValidation.isValid) {
-            setError(emailValidation.error!)
-            return
+
+        // Clear any previous errors
+        setError('')
+
+        // Define validation rules for login form
+        const validationRules = {
+            email: validateEmail,
+            password: validatePassword
         }
-        
-        const passwordValidation = validatePassword(password)
-        if (!passwordValidation.isValid) {
-            setError(passwordValidation.error!)
+
+        // Validate form data with specific rules
+        const formData = { email, password }
+        const formDataValidation = validateFormDataWithRules(formData, validationRules)
+        if (!formDataValidation.isValid) {
+            setError(formDataValidation.error!)
             return
         }
 

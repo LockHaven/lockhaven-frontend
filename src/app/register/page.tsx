@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
-import { validateEmail, validatePassword, validatePasswordConfirmation, validateRequired } from '@/lib/validation'
+import { validateFormDataWithRules, validateEmail, validatePassword, validateRequired } from '@/lib/validation'
 import FormInput from '@/components/ui/FormInput'
 
 export default function RegisterPage() {
@@ -26,35 +26,29 @@ export default function RegisterPage() {
 
         // Clear any previous errors
         setError('')
-        
-        // Use shared validation functions
-        const firstNameValidation = validateRequired(firstName, 'first name')
-        if (!firstNameValidation.isValid) {
-            setError(firstNameValidation.error!)
-            return
+
+        // Define validation rules for registration form
+        const validationRules = {
+            firstName: (value: string) => validateRequired(value, 'first name'),
+            lastName: (value: string) => validateRequired(value, 'last name'),
+            email: validateEmail,
+            password: validatePassword,
+            confirmPassword: (value: string) => {
+                if (!value) {
+                    return { isValid: false, error: ERROR_MESSAGES.REQUIRED_FIELDS }
+                }
+                if (value !== password) {
+                    return { isValid: false, error: ERROR_MESSAGES.PASSWORDS_DONT_MATCH }
+                }
+                return { isValid: true }
+            }
         }
 
-        const lastNameValidation = validateRequired(lastName, 'last name')
-        if (!lastNameValidation.isValid) {
-            setError(lastNameValidation.error!)
-            return
-        }
-
-        const emailValidation = validateEmail(email)
-        if (!emailValidation.isValid) {
-            setError(emailValidation.error!)
-            return
-        }
-
-        const passwordValidation = validatePassword(password)
-        if (!passwordValidation.isValid) {
-            setError(passwordValidation.error!)
-            return
-        }
-
-        const confirmPasswordValidation = validatePasswordConfirmation(password, confirmPassword)
-        if (!confirmPasswordValidation.isValid) {
-            setError(confirmPasswordValidation.error!)
+        // Validate form data with specific rules
+        const formData = { firstName, lastName, email, password, confirmPassword }
+        const formDataValidation = validateFormDataWithRules(formData, validationRules)
+        if (!formDataValidation.isValid) {
+            setError(formDataValidation.error!)
             return
         }
 
