@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔒 LockHaven - Secure File Storage
 
-## Getting Started
+A modern web application for uploading, encrypting, and securely storing files with military-grade AES-256 encryption.
 
-First, run the development server:
+## 🚀 Features
 
+- **Military-Grade Security**: AES-256 encryption for all uploaded files
+- **Easy Upload**: Drag and drop interface for seamless file uploads
+- **Cross-Platform Access**: Download your files securely from any device
+- **Modern UI**: Beautiful, responsive design built with Next.js and Tailwind CSS
+- **Privacy First**: Your encryption keys stay with you - we can't access your files
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS v4
+- **Language**: TypeScript
+- **Icons**: Custom SVG icons
+- **Fonts**: Geist Sans & Geist Mono
+
+## 📦 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd lockhaven-frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎨 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+lockhaven-frontend/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx      # Root layout with metadata
+│   │   ├── page.tsx        # Homepage with hero section
+│   │   └── globals.css     # Global styles
+│   └── ...
+├── public/
+│   └── lock-icon.svg       # Custom lock favicon
+├── package.json
+└── README.md
+```
 
-## Learn More
+## 🔧 Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Current Status
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ Modern homepage with hero section
+- ✅ Responsive navigation
+- ✅ Custom lock icon favicon
+- ✅ Security-focused design
+- 🔄 Upload functionality (coming soon)
+- 🔄 File management dashboard (coming soon)
+- 🔄 User authentication (coming soon)
 
-## Deploy on Vercel
+## 🔐 Security Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **AES-256 Encryption**: Military-grade encryption for all files
+- **Client-Side Keys**: Encryption keys never leave your device
+- **Secure Storage**: Encrypted files stored with zero-knowledge architecture
+- **Privacy First**: We cannot access or decrypt your files
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Deployment
+
+This is a Next.js application that can be deployed on:
+
+- [Vercel](https://vercel.com) (recommended)
+- [Netlify](https://netlify.com)
+- Any platform supporting Node.js
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For support, email support@lockhaven.com or join our Discord community.
+
+---
+
+Built with ❤️ using Next.js and Tailwind CSS
