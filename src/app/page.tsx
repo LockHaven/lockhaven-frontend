@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AuthTest } from "@/contexts/auth-test";
+import { AuthTest } from "@/__tests__/contexts/auth.test";
 
 export default function Home() {
   return (

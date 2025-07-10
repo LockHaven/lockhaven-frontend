@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 // Test component to demonstrate AuthContext usage
 export const AuthTest: React.FC = () => {
