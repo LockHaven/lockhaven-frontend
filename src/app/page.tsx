@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthTest } from "@/contexts/auth-test";
 
 export default function Home() {
   return (
@@ -90,6 +91,11 @@ export default function Home() {
               Download your files securely from any device. Your encryption keys stay with you, ensuring complete privacy.
             </p>
           </div>
+        </div>
+
+        {/* Auth Test Section - Remove this in production */}
+        <div className="mt-24">
+          <AuthTest />
         </div>
 
         {/* Stats Section */}

@@ -6,9 +6,11 @@ import { useRouter } from 'next/navigation'
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
 import { validateFormDataWithRules, validateEmail, validatePassword, validateRequired } from '@/lib/validation'
 import FormInput from '@/components/ui/FormInput'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function RegisterPage() {
     const router = useRouter()
+    const { register } = useAuth()
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -55,17 +57,11 @@ export default function RegisterPage() {
         setIsLoading(true)
 
         try {
-            // TODO: Add actual registration logic here
-            console.log('Registration attempt:', { firstName, lastName, email, password })
-
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            // Navigate to dashboard after successful registration
+            await register(firstName, lastName, email, password)
             setSuccess(SUCCESS_MESSAGES.REGISTRATION_SUCCESS)
             setTimeout(() => router.push('/dashboard'), 1500)
-        } catch (err) {
-            setError(ERROR_MESSAGES.REGISTRATION_FAILED)
+        } catch (err: any) {
+            setError(err.message || ERROR_MESSAGES.REGISTRATION_FAILED)
         } finally {
             setIsLoading(false)
         }

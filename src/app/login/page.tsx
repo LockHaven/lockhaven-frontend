@@ -6,9 +6,11 @@ import { useRouter } from 'next/navigation'
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, PASSWORD_REGEX } from '@/lib/constants'
 import { validateFormDataWithRules, validateEmail, validatePassword } from '@/lib/validation'
 import FormInput from '@/components/ui/FormInput'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function LoginPage() {
     const router = useRouter()
+    const { login } = useAuth()
     
     // State for form inputs
     const [email, setEmail] = useState('')
@@ -41,18 +43,11 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
-            // TODO: Add actual login logic here
-            console.log('Login attempt:', { email, password })
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            
-            // Navigate to dashboard after successful login
+            await login(email, password)
             setSuccess(SUCCESS_MESSAGES.LOGIN_SUCCESS)
             setTimeout(() => router.push('/dashboard'), 1500)
-            
-        } catch (err) {
-            setError(ERROR_MESSAGES.LOGIN_FAILED)
+        } catch (err: any) {
+            setError(err.message || ERROR_MESSAGES.LOGIN_FAILED)
         } finally {
             setIsLoading(false)
         }
